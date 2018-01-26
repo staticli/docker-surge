@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+env:
+  global:
+    - REGISTRY_USER=staticlibot
+script:
+  - docker build --tag staticli/surge .
+  - docker run staticli/surge
+
+after_script:
+  - docker images
+
+before_deploy:
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+deploy:
+  provider: script
+  script: docker push staticli/surge
+  on:
+    branch: master
